@@ -5,6 +5,21 @@ using namespace std;
 
 void Game::InitializeRooms()
 {
+    // Room 0 heads North to Room 1
+    m_rooms[0].AddRoom(Room::JoiningDirections::North, &(m_rooms[1]));
+
+    // Room 1 heads East to Room 2, South to Room 0 and West to Room 3
+    m_rooms[1].AddRoom(Room::JoiningDirections::East, &(m_rooms[2]));
+    m_rooms[1].AddRoom(Room::JoiningDirections::South, &(m_rooms[0]));
+    m_rooms[1].AddRoom(Room::JoiningDirections::West, &(m_rooms[3]));
+
+    // Room 2 heads West to Room 1
+    m_rooms[2].AddRoom(Room::JoiningDirections::West, &(m_rooms[1]));
+
+    // Room 3 heads East to Room 1
+    m_rooms[3].AddRoom(Room::JoiningDirections::East, &(m_rooms[1]));
+
+    m_player.SetCurrentRoom(&(m_rooms[0]));
 
 }
 
@@ -53,6 +68,8 @@ PlayerOptions Game::EvaluateInput(std::string& playerInput)
 
 void Game::RunGame()
 {
+    InitializeRooms();
+
     WelcomePlayer();
 
     bool shouldEnd = false;
