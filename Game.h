@@ -8,7 +8,7 @@ class Game
 {
 private:
 	static const unsigned int m_numOfRooms = 4;
-	Room rooms[m_numOfRooms];
+	Room m_rooms[m_numOfRooms];
 
 	Player m_player;
 
