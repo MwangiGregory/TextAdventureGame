@@ -2,6 +2,7 @@
 
 #include <string>
 #include "Entity.h"
+#include "Room.h"
 
 class Player : public Entity
 {
