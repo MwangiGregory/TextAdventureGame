@@ -17,6 +17,8 @@ private:
 
 	void GivePlayerOptions();
 
+	void UpdatedOption(PlayerOptions selectedOption);
+
 	void GetPlayerInput(std::string& playerInput);
 
 	PlayerOptions EvaluateInput(std::string& playerInput);
