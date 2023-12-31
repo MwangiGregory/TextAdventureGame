@@ -1,7 +1,29 @@
-#include "Game.h"
 #include <iostream>
-
+#include "Game.h"
+#include "Room.h"
 using namespace std;
+
+Game::Game()
+    : m_moveNorthOption(Room::JoiningDirections::North,
+        PlayerOptions::GoNorth,
+        "Go North")
+    , m_moveEastOption(Room::JoiningDirections::East,
+        PlayerOptions::GoEast,
+        "Go East")
+    , m_moveSouthOption(Room::JoiningDirections::South,
+        PlayerOptions::GoSouth,
+        "Go South")
+    , m_moveWestOption(Room::JoiningDirections::West,
+        PlayerOptions::GoWest,
+        "Go West")
+    , m_quitOption("Quit")
+{
+    m_options[0] = dynamic_cast<Option*>(&m_moveNorthOption);
+    m_options[1] = dynamic_cast<Option*>(&m_moveEastOption);
+    m_options[2] = dynamic_cast<Option*>(&m_moveSouthOption);
+    m_options[3] = dynamic_cast<Option*>(&m_moveWestOption);
+    m_options[4] = dynamic_cast<Option*>(&m_quitOption);
+}
 
 void Game::InitializeRooms()
 {
