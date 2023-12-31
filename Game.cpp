@@ -63,11 +63,16 @@ void Game::WelcomePlayer()
 void Game::GivePlayerOptions()
 {
     cout << "What would you like to do? (Enter a corresponding number)" << endl << endl;
-    cout << "1: Go North" << endl << endl;
-    cout << "2: Go East" << endl << endl;
-    cout << "3: Go South" << endl << endl;
-    cout << "4: Go West" << endl << endl;
-    cout << "5: Quit" << endl << endl;
+    
+    for (int i = 0; i < m_numberOfOptions; ++i)
+    {
+        Option* option = m_options[i];
+        const unsigned int chosenOption = i + 1;
+        cout << chosenOption << ": " << option->GetOutputText() << endl << endl;
+
+        const std::string chosenOptionStr = std::to_string(chosenOption);
+        option->SetOptionText(chosenOptionStr);
+    }
 }
 
 void Game::GetPlayerInput(std::string& playerInput)
@@ -79,104 +84,23 @@ PlayerOptions Game::EvaluateInput(std::string& playerInput)
 {
     PlayerOptions chosenOption = PlayerOptions::None;
 
-    if (playerInput.compare("1") == 0)
+    for (unsigned int i = 0; i < m_numberOfOptions; ++i)
     {
-        cout << "You have choosen to Go North" << endl << endl;
-        chosenOption = PlayerOptions::GoNorth;
+        Option* option = m_options[i];
+        bool handled = option->Evaluate(playerInput, m_player);
+        if (handled == true)
+        {
+            chosenOption = option->GetChosenOption();
+            break;
+        }
     }
-    else if (playerInput.compare("2") == 0)
-    {
-        cout << "You have choosen to Go East" << endl << endl;
-        chosenOption = PlayerOptions::GoEast;
-    }
-    else if (playerInput.compare("3") == 0)
-    {
-        cout << "You have chosen to Go South!" << endl << endl;
-        chosenOption = PlayerOptions::GoSouth;
-    }
-    else if (playerInput.compare("4") == 0)
-    {
-        cout << "You have chosen to Go West!" << endl << endl;
-        chosenOption = PlayerOptions::GoWest;
-    }
-    else if (playerInput.compare("5") == 0)
-    {
-        cout << "You have chosen to Quit!" << endl << endl;
-        chosenOption = PlayerOptions::Quit;
-    }
-    else
+
+    if (chosenOption == PlayerOptions::None)
     {
         cout << "I do not recognize that option, try again!" << endl << endl;
     }
-
+ 
     return chosenOption;
-}
-
-void Game::UpdatedOption(PlayerOptions selectedOption)
-{
-    if (selectedOption == PlayerOptions::GoNorth ||
-        selectedOption == PlayerOptions::GoEast ||
-        selectedOption == PlayerOptions::GoSouth ||
-        selectedOption == PlayerOptions::GoWest)
-    {
-        Room::JoiningDirections directionToMove
-            = Room::JoiningDirections::North;
-
-        switch (selectedOption)
-        {
-        case PlayerOptions::GoEast:
-        {
-            directionToMove = Room::JoiningDirections::East;
-        }
-        break;
-
-        case PlayerOptions::GoSouth:
-        {
-            directionToMove = Room::JoiningDirections::South;
-        }
-        break;
-        
-        case PlayerOptions::GoWest:
-        {
-            directionToMove = Room::JoiningDirections::West;
-        }
-        break;
-        }
-
-        const Room* pPlayerCurrentRoom = m_player.GetCurrentRoom();
-        const Room* pNewRoom = pPlayerCurrentRoom->GetRoom(directionToMove);
-        if (pNewRoom != nullptr)
-        {
-            m_player.SetCurrentRoom(pNewRoom);
-        }
-        else
-        {
-            const char* strDirection = "North";
-            switch (selectedOption)
-            {
-            case PlayerOptions::GoEast:
-            {
-                strDirection = "East";
-            }
-            break;
-
-            case PlayerOptions::GoSouth:
-            {
-                strDirection = "South";
-            }
-            break;
-
-            case PlayerOptions::GoWest:
-            {
-                strDirection = "West";
-            }
-            break;
-            }
-
-            cout << "There is no room to the "
-                << strDirection << endl << endl;
-        }
-    }
 }
 
 void Game::RunGame()
@@ -196,9 +120,5 @@ void Game::RunGame()
 
         PlayerOptions selectedOption = EvaluateInput(playerInput);
         shouldEnd = selectedOption == PlayerOptions::Quit;
-        if (shouldEnd == false)
-        {
-            UpdatedOption(selectedOption);
-        }
     }
 }
